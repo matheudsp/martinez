@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "hono": {
+      "source": "spenserhale/hono-skill",
+      "sourceType": "github",
+      "skillPath": "skills/hono/SKILL.md",
+      "computedHash": "07c18878ee5e895ebde69f709c7d6bb74c11533d143c4904e6fe43d06e465c16"
+    }
+  }
+}

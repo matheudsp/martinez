@@ -1,0 +1,13 @@
+{
+  "name": "martinez",
+  "private": true,
+  "workspaces": ["apps/*"],
+  "scripts": {
+    "dev:server": "bun run --cwd apps/server dev",
+    "dev:mobile": "bun run --cwd apps/mobile start",
+    "deploy:server": "bun run --cwd apps/server deploy",
+    "lint:mobile": "bun run --cwd apps/mobile lint",
+    "typecheck:mobile": "bun run --cwd apps/mobile typecheck",
+    "format": "bun run --cwd apps/mobile format"
+  }
+}
