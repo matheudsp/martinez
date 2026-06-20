@@ -5,6 +5,9 @@ import users from "@/routes/users/users.index";
 import fuels from "@/routes/fuels/fuels.index";
 import stations from "@/routes/stations/stations.index";
 import prices from "@/routes/prices/prices.index";
+import { openAPIRouteHandler } from 'hono-openapi'
+import { apiReference } from '@scalar/hono-api-reference'
+import type { Hono } from 'hono'
 
 const app = createApp()
 
@@ -20,5 +23,38 @@ const routes = [
 routes.forEach((route) => {
   app.route('/', route)
 })
+
+app.get(
+  '/openapi',
+  openAPIRouteHandler(app as Hono<any>, {
+    documentation: {
+      info: {
+        title: 'Martinez API',
+        version: '1.0.0',
+        description: 'Gas station fuel price tracker API',
+      },
+      servers: [
+        { url: 'http://localhost:3000', description: 'Local' },
+      ],
+      components: {
+        securitySchemes: {
+          bearerAuth: {
+            type: 'http',
+            scheme: 'bearer',
+            description: 'Better Auth session token',
+          },
+        },
+      },
+    },
+  })
+)
+
+app.get(
+  '/docs',
+  apiReference({
+    spec: { url: '/openapi' },
+    pageTitle: 'Martinez API Docs',
+  })
+)
 
 export default app

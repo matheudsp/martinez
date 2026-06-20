@@ -10,3 +10,11 @@ export const createFuelSchema = z.object({
 });
 
 export const updateFuelSchema = createFuelSchema.partial();
+
+export const fuelSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  slug: z.string(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+});
