@@ -1,6 +1,6 @@
-import type { MiddlewareHandler } from 'hono'
-import { createAuth } from '@/lib/auth'
-import { AppBindings } from '@/lib/types';
+import type { MiddlewareHandler } from "hono";
+import { createAuth } from "@/lib/auth";
+import { AppBindings } from "@/lib/types";
 
 const withSession: MiddlewareHandler<AppBindings> = async (c, next) => {
   const auth = createAuth(c.env);

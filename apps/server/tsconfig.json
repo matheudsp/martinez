@@ -10,6 +10,7 @@
     ],
     "jsx": "react-jsx",
     "jsxImportSource": "hono/jsx",
+    "ignoreDeprecations": "6.0",
     "baseUrl": "./",
     "outDir": "./dist",
     "paths": {

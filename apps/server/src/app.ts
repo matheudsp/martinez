@@ -1,60 +1,57 @@
-import createApp from '@/lib/create-app'
-import index from '@/routes/index.route'
-import auth from '@/routes/auth/auth.index'
+import createApp from "@/lib/create-app";
+import index from "@/routes/index.route";
+import auth from "@/routes/auth/auth.index";
 import users from "@/routes/users/users.index";
 import fuels from "@/routes/fuels/fuels.index";
 import stations from "@/routes/stations/stations.index";
 import prices from "@/routes/prices/prices.index";
-import { openAPIRouteHandler } from 'hono-openapi'
-import { apiReference } from '@scalar/hono-api-reference'
-import type { Hono } from 'hono'
+import { openAPIRouteHandler } from "hono-openapi";
+import { apiReference } from "@scalar/hono-api-reference";
+import type { Hono } from "hono";
 
-const app = createApp()
+const app = createApp();
 
-const routes = [
-  index,
-  auth,
-  users,
-  fuels,
-  stations,
-  prices,
-] as const;
+const routes = [index, auth, users, fuels, stations, prices] as const;
 
 routes.forEach((route) => {
-  app.route('/', route)
-})
+  app.route("/", route);
+});
 
 app.get(
-  '/openapi',
+  "/openapi",
   openAPIRouteHandler(app as Hono<any>, {
     documentation: {
       info: {
-        title: 'Martinez API',
-        version: '1.0.0',
-        description: 'Gas station fuel price tracker API',
+        title: "Martinez API",
+        version: "1.0.0",
+        description: "Gas station fuel price tracker API",
       },
-      servers: [
-        { url: 'http://localhost:3000', description: 'Local' },
-      ],
+      servers: [{ url: "http://localhost:3000", description: "Local" }],
       components: {
         securitySchemes: {
           bearerAuth: {
-            type: 'http',
-            scheme: 'bearer',
-            description: 'Better Auth session token',
+            type: "http",
+            scheme: "bearer",
+            description: "Better Auth session token",
           },
         },
       },
     },
-  })
-)
+  }),
+);
 
 app.get(
-  '/docs',
+  "/docs",
   apiReference({
-    spec: { url: '/openapi' },
-    pageTitle: 'Martinez API Docs',
-  })
-)
+    spec: { url: "/openapi" },
+    pageTitle: "Martinez API Docs",
+    authentication: {
+      preferredSecurityScheme: "bearerAuth",
+      securitySchemes: {
+        bearerAuth: { token: "" },
+      },
+    },
+  }),
+);
 
-export default app
+export default app;

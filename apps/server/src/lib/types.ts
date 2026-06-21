@@ -1,26 +1,13 @@
+// types.ts
 import type { Environment } from "@/env";
+import type { createAuth } from "@/lib/auth";
 
-export type UserRole = "user" | "admin";
+type Auth = ReturnType<typeof createAuth>;
+type InferredSession = Auth["$Infer"]["Session"];
 
-export interface AppUser {
-  id: string;
-  name: string;
-  email: string;
-  emailVerified: boolean;
-  image: string | null;
-  role: UserRole;
-  city: string | null;
-  expoPushToken: string | null;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface AppSession {
-  id: string;
-  expiresAt: Date;
-  token: string;
-  userId: string;
-}
+export type AppUser = InferredSession["user"];
+export type AppSession = InferredSession["session"];
+export type UserRole = NonNullable<AppUser["role"]>;
 
 export interface AppBindings {
   Bindings: Environment;
