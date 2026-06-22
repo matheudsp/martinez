@@ -14,6 +14,7 @@
     "format": "prettier . --write"
   },
   "dependencies": {
+    "@better-auth/expo": "^1.6.20",
     "@expo/vector-icons": "^15.1.1",
     "@gorhom/bottom-sheet": "^5.2.14",
     "@react-navigation/bottom-tabs": "^7.16.0",
@@ -21,22 +22,24 @@
     "@react-navigation/native": "^7.2.4",
     "@tanstack/react-form": "^1.32.0",
     "@tanstack/react-query": "^5.100.10",
+    "better-auth": "^1.6.20",
     "expo": "~55.0.24",
     "expo-build-properties": "~55.0.14",
-    "expo-constants": "~55.0.16",
+    "expo-constants": "^56.0.18",
     "expo-dev-client": "~55.0.33",
     "expo-device": "~55.0.17",
     "expo-font": "~55.0.7",
     "expo-glass-effect": "~55.0.11",
     "expo-image": "~55.0.10",
-    "expo-linking": "~55.0.15",
-    "expo-network": "~55.0.14",
+    "expo-linking": "^56.0.14",
+    "expo-network": "^56.0.5",
     "expo-router": "~55.0.14",
+    "expo-secure-store": "^56.0.4",
     "expo-splash-screen": "~55.0.21",
     "expo-status-bar": "~55.0.6",
     "expo-symbols": "~55.0.8",
     "expo-system-ui": "~55.0.18",
-    "expo-web-browser": "~55.0.16",
+    "expo-web-browser": "^56.0.5",
     "heroui-native": "^1.0.3",
     "react": "19.2.0",
     "react-dom": "19.2.0",
@@ -87,9 +90,15 @@
   },
   "jest": {
     "preset": "jest-expo",
-    "roots": ["<rootDir>/tests"],
-    "setupFiles": ["<rootDir>/tests/testing-utils/jest-setup.ts"],
-    "setupFilesAfterEnv": ["<rootDir>/tests/testing-utils/jest-after-env.ts"],
+    "roots": [
+      "<rootDir>/tests"
+    ],
+    "setupFiles": [
+      "<rootDir>/tests/testing-utils/jest-setup.ts"
+    ],
+    "setupFilesAfterEnv": [
+      "<rootDir>/tests/testing-utils/jest-after-env.ts"
+    ],
     "collectCoverage": true,
     "collectCoverageFrom": [
       "src/**/*.{ts,tsx,js,jsx}",
@@ -99,8 +108,13 @@
       "!src/**/index.{ts,tsx,js,jsx}"
     ],
     "coverageDirectory": "coverage/app",
-    "coverageReporters": ["text-summary", "lcov"],
-    "testMatch": ["<rootDir>/tests/**/*.test.[jt]s?(x)"],
+    "coverageReporters": [
+      "text-summary",
+      "lcov"
+    ],
+    "testMatch": [
+      "<rootDir>/tests/**/*.test.[jt]s?(x)"
+    ],
     "transformIgnorePatterns": [
       "node_modules/(?!(?:((jest-)?react-native|@react-native(-community)?|expo(nent)?|@expo(nent)?/.*|react-navigation|@react-navigation/.*|native-base|react-native-svg|react-native-worklets|react-native-reanimated|react-native-keyboard-controller|react-native-gesture-handler|react-native-safe-area-context|heroui-native|uniwind|tailwind-variants|superjson|copy-anything|is-what)))"
     ],
