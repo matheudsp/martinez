@@ -19,21 +19,47 @@ import { z } from "zod";
 
 const router = createRouter();
 
-router.use("/api/stations/*", requireAuth);
+router.use("/stations/*", requireAuth);
 
 router.get(
-  "/api/stations",
+  "/stations",
   describeRoute({
     tags: ["Stations"],
     summary: "List stations",
-    description: "Returns stations, optionally filtered by location radius or city",
+    description:
+      "Returns stations, optionally filtered by location radius or city",
     security: [{ bearerAuth: [] }],
     parameters: [
-      { name: "lat", in: "query", schema: { type: "number" }, description: "Latitude for geo filter" },
-      { name: "lng", in: "query", schema: { type: "number" }, description: "Longitude for geo filter" },
-      { name: "radius", in: "query", schema: { type: "number", default: 50 }, description: "Radius in km (default 50)" },
-      { name: "city", in: "query", schema: { type: "string" }, description: "Filter by city name" },
-      { name: "active", in: "query", schema: { type: "boolean", default: true }, description: "Filter by active status" },
+      {
+        name: "lat",
+        in: "query",
+        schema: { type: "number" },
+        description: "Latitude for geo filter",
+      },
+      {
+        name: "lng",
+        in: "query",
+        schema: { type: "number" },
+        description: "Longitude for geo filter",
+      },
+      {
+        name: "radius",
+        in: "query",
+        schema: { type: "number", default: 50 },
+        description: "Radius in km (default 50)",
+      },
+      {
+        name: "city",
+        in: "query",
+        schema: { type: "string" },
+        description: "Filter by city name",
+      },
+      {
+        name: "active",
+        in: "query",
+        schema: { type: "boolean", default: true },
+        description: "Filter by active status",
+      },
     ],
     responses: {
       200: {
@@ -44,13 +70,16 @@ router.get(
           },
         },
       },
-      401: { description: "Unauthorized", content: { "application/json": { schema: errorSchema } } },
+      401: {
+        description: "Unauthorized",
+        content: { "application/json": { schema: errorSchema } },
+      },
     },
-  })
+  }),
 );
 
 router.get(
-  "/api/stations",
+  "/stations",
   zValidator("query", listStationsQuerySchema),
   async (c) => {
     const db = createDb(c.env);
@@ -94,8 +123,8 @@ router.get(
           and(
             eq(station.isActive, active),
             sql`${distanceExpr} <= ${radius}`,
-            cityFilter ? eq(station.city, cityFilter) : undefined
-          )
+            cityFilter ? eq(station.city, cityFilter) : undefined,
+          ),
         )
         .orderBy(asc(distanceExpr));
 
@@ -108,17 +137,17 @@ router.get(
       .where(
         and(
           eq(station.isActive, active),
-          cityFilter ? eq(station.city, cityFilter) : undefined
-        )
+          cityFilter ? eq(station.city, cityFilter) : undefined,
+        ),
       )
       .orderBy(asc(station.name));
 
     return c.json({ stations });
-  }
+  },
 );
 
 router.get(
-  "/api/stations/:id",
+  "/stations/:id",
   describeRoute({
     tags: ["Stations"],
     summary: "Get station",
@@ -133,20 +162,29 @@ router.get(
               z.object({
                 station: stationSchema,
                 fuels: z.array(stationFuelSchema),
-              })
+              }),
             ),
           },
         },
       },
-      401: { description: "Unauthorized", content: { "application/json": { schema: errorSchema } } },
-      404: { description: "Station not found", content: { "application/json": { schema: errorSchema } } },
+      401: {
+        description: "Unauthorized",
+        content: { "application/json": { schema: errorSchema } },
+      },
+      404: {
+        description: "Station not found",
+        content: { "application/json": { schema: errorSchema } },
+      },
     },
   }),
   async (c) => {
     const { id } = c.req.param();
     const db = createDb(c.env);
 
-    const [stationData] = await db.select().from(station).where(eq(station.id, id));
+    const [stationData] = await db
+      .select()
+      .from(station)
+      .where(eq(station.id, id));
 
     if (!stationData) {
       throw new HTTPException(404, { message: "Station not found" });
@@ -170,11 +208,11 @@ router.get(
       station: stationData,
       fuels,
     });
-  }
+  },
 );
 
 router.post(
-  "/api/stations",
+  "/stations",
   describeRoute({
     tags: ["Stations"],
     summary: "Create station",
@@ -195,14 +233,20 @@ router.post(
           },
         },
       },
-      401: { description: "Unauthorized", content: { "application/json": { schema: errorSchema } } },
-      403: { description: "Forbidden", content: { "application/json": { schema: errorSchema } } },
+      401: {
+        description: "Unauthorized",
+        content: { "application/json": { schema: errorSchema } },
+      },
+      403: {
+        description: "Forbidden",
+        content: { "application/json": { schema: errorSchema } },
+      },
     },
-  })
+  }),
 );
 
 router.post(
-  "/api/stations",
+  "/stations",
   requireAdmin,
   zValidator("json", createStationSchema),
   async (c) => {
@@ -220,11 +264,11 @@ router.post(
       .returning();
 
     return c.json({ station: created }, 201);
-  }
+  },
 );
 
 router.patch(
-  "/api/stations/:id",
+  "/stations/:id",
   describeRoute({
     tags: ["Stations"],
     summary: "Update station",
@@ -245,15 +289,24 @@ router.patch(
           },
         },
       },
-      401: { description: "Unauthorized", content: { "application/json": { schema: errorSchema } } },
-      403: { description: "Forbidden", content: { "application/json": { schema: errorSchema } } },
-      404: { description: "Station not found", content: { "application/json": { schema: errorSchema } } },
+      401: {
+        description: "Unauthorized",
+        content: { "application/json": { schema: errorSchema } },
+      },
+      403: {
+        description: "Forbidden",
+        content: { "application/json": { schema: errorSchema } },
+      },
+      404: {
+        description: "Station not found",
+        content: { "application/json": { schema: errorSchema } },
+      },
     },
-  })
+  }),
 );
 
 router.patch(
-  "/api/stations/:id",
+  "/stations/:id",
   requireAdmin,
   zValidator("json", updateStationSchema),
   async (c) => {
@@ -272,11 +325,11 @@ router.patch(
     }
 
     return c.json({ station: updated });
-  }
+  },
 );
 
 router.delete(
-  "/api/stations/:id",
+  "/stations/:id",
   requireAdmin,
   describeRoute({
     tags: ["Stations"],
@@ -288,13 +341,24 @@ router.delete(
         description: "Station deactivated",
         content: {
           "application/json": {
-            schema: zSchema(z.object({ message: z.string(), station: stationSchema })),
+            schema: zSchema(
+              z.object({ message: z.string(), station: stationSchema }),
+            ),
           },
         },
       },
-      401: { description: "Unauthorized", content: { "application/json": { schema: errorSchema } } },
-      403: { description: "Forbidden", content: { "application/json": { schema: errorSchema } } },
-      404: { description: "Station not found", content: { "application/json": { schema: errorSchema } } },
+      401: {
+        description: "Unauthorized",
+        content: { "application/json": { schema: errorSchema } },
+      },
+      403: {
+        description: "Forbidden",
+        content: { "application/json": { schema: errorSchema } },
+      },
+      404: {
+        description: "Station not found",
+        content: { "application/json": { schema: errorSchema } },
+      },
     },
   }),
   async (c) => {
@@ -312,7 +376,7 @@ router.delete(
     }
 
     return c.json({ message: "Station deactivated", station: deactivated });
-  }
+  },
 );
 
 export default router;

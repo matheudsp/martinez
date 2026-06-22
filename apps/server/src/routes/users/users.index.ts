@@ -11,10 +11,10 @@ import { z } from "zod";
 
 const router = createRouter();
 
-router.use("/api/users/*", requireAuth);
+router.use("/users/*", requireAuth);
 
 router.get(
-  "/api/users/me",
+  "/users/me",
   describeRoute({
     tags: ["Users"],
     summary: "Get current user",
@@ -29,17 +29,20 @@ router.get(
           },
         },
       },
-      401: { description: "Unauthorized", content: { "application/json": { schema: errorSchema } } },
+      401: {
+        description: "Unauthorized",
+        content: { "application/json": { schema: errorSchema } },
+      },
     },
   }),
   (c) => {
     const currentUser = c.get("user")!;
     return c.json({ user: currentUser });
-  }
+  },
 );
 
 router.patch(
-  "/api/users/me",
+  "/users/me",
   describeRoute({
     tags: ["Users"],
     summary: "Update current user",
@@ -60,39 +63,41 @@ router.patch(
           },
         },
       },
-      401: { description: "Unauthorized", content: { "application/json": { schema: errorSchema } } },
-      404: { description: "User not found", content: { "application/json": { schema: errorSchema } } },
+      401: {
+        description: "Unauthorized",
+        content: { "application/json": { schema: errorSchema } },
+      },
+      404: {
+        description: "User not found",
+        content: { "application/json": { schema: errorSchema } },
+      },
     },
-  })
+  }),
 );
 
-router.patch(
-  "/api/users/me",
-  zValidator("json", updateMeSchema),
-  async (c) => {
-    const currentUser = c.get("user")!;
-    const body = c.req.valid("json");
-    const db = createDb(c.env);
+router.patch("/users/me", zValidator("json", updateMeSchema), async (c) => {
+  const currentUser = c.get("user")!;
+  const body = c.req.valid("json");
+  const db = createDb(c.env);
 
-    const [updated] = await db
-      .update(user)
-      .set({
-        ...(body.name !== undefined && { name: body.name }),
-        ...(body.city !== undefined && { city: body.city }),
-        ...(body.expoPushToken !== undefined && {
-          expoPushToken: body.expoPushToken,
-        }),
-        updatedAt: new Date(),
-      })
-      .where(eq(user.id, currentUser.id))
-      .returning();
+  const [updated] = await db
+    .update(user)
+    .set({
+      ...(body.name !== undefined && { name: body.name }),
+      ...(body.city !== undefined && { city: body.city }),
+      ...(body.expoPushToken !== undefined && {
+        expoPushToken: body.expoPushToken,
+      }),
+      updatedAt: new Date(),
+    })
+    .where(eq(user.id, currentUser.id))
+    .returning();
 
-    if (!updated) {
-      throw new HTTPException(404, { message: "User not found" });
-    }
-
-    return c.json({ user: updated });
+  if (!updated) {
+    throw new HTTPException(404, { message: "User not found" });
   }
-);
+
+  return c.json({ user: updated });
+});
 
 export default router;

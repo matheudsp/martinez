@@ -18,26 +18,39 @@ import { z } from "zod";
 
 const router = createRouter();
 
-router.use("/api/stations/:stationId/fuels*", requireAuth);
+router.use("/stations/:stationId/fuels*", requireAuth);
 
 router.get(
-  "/api/stations/:stationId/fuels",
+  "/stations/:stationId/fuels",
   describeRoute({
     tags: ["Prices"],
     summary: "List station fuels",
-    description: "Returns all fuels available at a station with their current prices",
+    description:
+      "Returns all fuels available at a station with their current prices",
     security: [{ bearerAuth: [] }],
     responses: {
       200: {
         description: "Station fuels with prices",
         content: {
           "application/json": {
-            schema: zSchema(z.object({ fuels: z.array(stationFuelDetailSchema.omit({ stationId: true })) })),
+            schema: zSchema(
+              z.object({
+                fuels: z.array(
+                  stationFuelDetailSchema.omit({ stationId: true }),
+                ),
+              }),
+            ),
           },
         },
       },
-      401: { description: "Unauthorized", content: { "application/json": { schema: errorSchema } } },
-      404: { description: "Station not found", content: { "application/json": { schema: errorSchema } } },
+      401: {
+        description: "Unauthorized",
+        content: { "application/json": { schema: errorSchema } },
+      },
+      404: {
+        description: "Station not found",
+        content: { "application/json": { schema: errorSchema } },
+      },
     },
   }),
   async (c) => {
@@ -68,15 +81,16 @@ router.get(
       .where(eq(stationFuel.stationId, stationId));
 
     return c.json({ fuels });
-  }
+  },
 );
 
 router.post(
-  "/api/stations/:stationId/fuels",
+  "/stations/:stationId/fuels",
   describeRoute({
     tags: ["Prices"],
     summary: "Add fuel to station",
-    description: "Adds a fuel type with an initial price to a station (admin only)",
+    description:
+      "Adds a fuel type with an initial price to a station (admin only)",
     security: [{ bearerAuth: [] }],
     requestBody: {
       required: true,
@@ -93,15 +107,24 @@ router.post(
           },
         },
       },
-      401: { description: "Unauthorized", content: { "application/json": { schema: errorSchema } } },
-      403: { description: "Forbidden", content: { "application/json": { schema: errorSchema } } },
-      404: { description: "Station or fuel not found", content: { "application/json": { schema: errorSchema } } },
+      401: {
+        description: "Unauthorized",
+        content: { "application/json": { schema: errorSchema } },
+      },
+      403: {
+        description: "Forbidden",
+        content: { "application/json": { schema: errorSchema } },
+      },
+      404: {
+        description: "Station or fuel not found",
+        content: { "application/json": { schema: errorSchema } },
+      },
     },
-  })
+  }),
 );
 
 router.post(
-  "/api/stations/:stationId/fuels",
+  "/stations/:stationId/fuels",
   requireAdmin,
   zValidator("json", addFuelToStationSchema),
   async (c) => {
@@ -155,11 +178,11 @@ router.post(
     });
 
     return c.json({ stationFuel: created }, 201);
-  }
+  },
 );
 
 router.patch(
-  "/api/stations/:stationId/fuels/:fuelId/price",
+  "/stations/:stationId/fuels/:fuelId/price",
   describeRoute({
     tags: ["Prices"],
     summary: "Update fuel price",
@@ -180,15 +203,24 @@ router.patch(
           },
         },
       },
-      401: { description: "Unauthorized", content: { "application/json": { schema: errorSchema } } },
-      403: { description: "Forbidden", content: { "application/json": { schema: errorSchema } } },
-      404: { description: "Fuel not registered for this station", content: { "application/json": { schema: errorSchema } } },
+      401: {
+        description: "Unauthorized",
+        content: { "application/json": { schema: errorSchema } },
+      },
+      403: {
+        description: "Forbidden",
+        content: { "application/json": { schema: errorSchema } },
+      },
+      404: {
+        description: "Fuel not registered for this station",
+        content: { "application/json": { schema: errorSchema } },
+      },
     },
-  })
+  }),
 );
 
 router.patch(
-  "/api/stations/:stationId/fuels/:fuelId/price",
+  "/stations/:stationId/fuels/:fuelId/price",
   requireAdmin,
   zValidator("json", updateFuelPriceSchema),
   async (c) => {
@@ -200,7 +232,12 @@ router.patch(
     const [existing] = await db
       .select()
       .from(stationFuel)
-      .where(and(eq(stationFuel.stationId, stationId), eq(stationFuel.fuelId, fuelId)));
+      .where(
+        and(
+          eq(stationFuel.stationId, stationId),
+          eq(stationFuel.fuelId, fuelId),
+        ),
+      );
 
     if (!existing) {
       throw new HTTPException(404, {
@@ -235,11 +272,11 @@ router.patch(
     });
 
     return c.json({ stationFuel: updated });
-  }
+  },
 );
 
 router.delete(
-  "/api/stations/:stationId/fuels/:fuelId",
+  "/stations/:stationId/fuels/:fuelId",
   requireAdmin,
   describeRoute({
     tags: ["Prices"],
@@ -255,9 +292,18 @@ router.delete(
           },
         },
       },
-      401: { description: "Unauthorized", content: { "application/json": { schema: errorSchema } } },
-      403: { description: "Forbidden", content: { "application/json": { schema: errorSchema } } },
-      404: { description: "Fuel not registered for this station", content: { "application/json": { schema: errorSchema } } },
+      401: {
+        description: "Unauthorized",
+        content: { "application/json": { schema: errorSchema } },
+      },
+      403: {
+        description: "Forbidden",
+        content: { "application/json": { schema: errorSchema } },
+      },
+      404: {
+        description: "Fuel not registered for this station",
+        content: { "application/json": { schema: errorSchema } },
+      },
     },
   }),
   async (c) => {
@@ -267,7 +313,12 @@ router.delete(
     const [existing] = await db
       .select({ id: stationFuel.id })
       .from(stationFuel)
-      .where(and(eq(stationFuel.stationId, stationId), eq(stationFuel.fuelId, fuelId)));
+      .where(
+        and(
+          eq(stationFuel.stationId, stationId),
+          eq(stationFuel.fuelId, fuelId),
+        ),
+      );
 
     if (!existing) {
       throw new HTTPException(404, {
@@ -278,11 +329,11 @@ router.delete(
     await db.delete(stationFuel).where(eq(stationFuel.id, existing.id));
 
     return c.json({ message: "Fuel removed from station" });
-  }
+  },
 );
 
 router.get(
-  "/api/stations/:stationId/fuels/:fuelId/history",
+  "/stations/:stationId/fuels/:fuelId/history",
   describeRoute({
     tags: ["Prices"],
     summary: "Get price history",
@@ -297,7 +348,10 @@ router.get(
           },
         },
       },
-      401: { description: "Unauthorized", content: { "application/json": { schema: errorSchema } } },
+      401: {
+        description: "Unauthorized",
+        content: { "application/json": { schema: errorSchema } },
+      },
     },
   }),
   async (c) => {
@@ -313,12 +367,17 @@ router.get(
         changedById: priceHistory.changedById,
       })
       .from(priceHistory)
-      .where(and(eq(priceHistory.stationId, stationId), eq(priceHistory.fuelId, fuelId)))
+      .where(
+        and(
+          eq(priceHistory.stationId, stationId),
+          eq(priceHistory.fuelId, fuelId),
+        ),
+      )
       .orderBy(desc(priceHistory.changedAt))
       .limit(50);
 
     return c.json({ history });
-  }
+  },
 );
 
 export default router;

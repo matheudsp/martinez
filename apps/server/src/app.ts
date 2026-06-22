@@ -14,11 +14,11 @@ const app = createApp();
 const routes = [index, auth, users, fuels, stations, prices] as const;
 
 routes.forEach((route) => {
-  app.route("/", route);
+  app.route("/api", route);
 });
 
 app.get(
-  "/openapi",
+  "/api/openapi",
   openAPIRouteHandler(app as Hono<any>, {
     documentation: {
       info: {
@@ -41,9 +41,9 @@ app.get(
 );
 
 app.get(
-  "/docs",
+  "/api/docs",
   apiReference({
-    spec: { url: "/openapi" },
+    spec: { url: "/api/openapi" },
     pageTitle: "Martinez API Docs",
     authentication: {
       preferredSecurityScheme: "bearerAuth",

@@ -13,10 +13,10 @@ import { z } from "zod";
 
 const router = createRouter();
 
-router.use("/api/fuels/*", requireAuth);
+router.use("/fuels/*", requireAuth);
 
 router.get(
-  "/api/fuels",
+  "/fuels",
   describeRoute({
     tags: ["Fuels"],
     summary: "List fuels",
@@ -31,18 +31,21 @@ router.get(
           },
         },
       },
-      401: { description: "Unauthorized", content: { "application/json": { schema: errorSchema } } },
+      401: {
+        description: "Unauthorized",
+        content: { "application/json": { schema: errorSchema } },
+      },
     },
   }),
   async (c) => {
     const db = createDb(c.env);
     const fuels = await db.select().from(fuel).orderBy(fuel.name);
     return c.json({ fuels });
-  }
+  },
 );
 
 router.post(
-  "/api/fuels",
+  "/fuels",
   describeRoute({
     tags: ["Fuels"],
     summary: "Create fuel",
@@ -63,14 +66,20 @@ router.post(
           },
         },
       },
-      401: { description: "Unauthorized", content: { "application/json": { schema: errorSchema } } },
-      403: { description: "Forbidden", content: { "application/json": { schema: errorSchema } } },
+      401: {
+        description: "Unauthorized",
+        content: { "application/json": { schema: errorSchema } },
+      },
+      403: {
+        description: "Forbidden",
+        content: { "application/json": { schema: errorSchema } },
+      },
     },
-  })
+  }),
 );
 
 router.post(
-  "/api/fuels",
+  "/fuels",
   requireAdmin,
   zValidator("json", createFuelSchema),
   async (c) => {
@@ -89,11 +98,11 @@ router.post(
       .returning();
 
     return c.json({ fuel: created }, 201);
-  }
+  },
 );
 
 router.patch(
-  "/api/fuels/:id",
+  "/fuels/:id",
   describeRoute({
     tags: ["Fuels"],
     summary: "Update fuel",
@@ -114,15 +123,24 @@ router.patch(
           },
         },
       },
-      401: { description: "Unauthorized", content: { "application/json": { schema: errorSchema } } },
-      403: { description: "Forbidden", content: { "application/json": { schema: errorSchema } } },
-      404: { description: "Fuel not found", content: { "application/json": { schema: errorSchema } } },
+      401: {
+        description: "Unauthorized",
+        content: { "application/json": { schema: errorSchema } },
+      },
+      403: {
+        description: "Forbidden",
+        content: { "application/json": { schema: errorSchema } },
+      },
+      404: {
+        description: "Fuel not found",
+        content: { "application/json": { schema: errorSchema } },
+      },
     },
-  })
+  }),
 );
 
 router.patch(
-  "/api/fuels/:id",
+  "/fuels/:id",
   requireAdmin,
   zValidator("json", updateFuelSchema),
   async (c) => {
@@ -141,11 +159,11 @@ router.patch(
     }
 
     return c.json({ fuel: updated });
-  }
+  },
 );
 
 router.delete(
-  "/api/fuels/:id",
+  "/fuels/:id",
   requireAdmin,
   describeRoute({
     tags: ["Fuels"],
@@ -161,9 +179,18 @@ router.delete(
           },
         },
       },
-      401: { description: "Unauthorized", content: { "application/json": { schema: errorSchema } } },
-      403: { description: "Forbidden", content: { "application/json": { schema: errorSchema } } },
-      404: { description: "Fuel not found", content: { "application/json": { schema: errorSchema } } },
+      401: {
+        description: "Unauthorized",
+        content: { "application/json": { schema: errorSchema } },
+      },
+      403: {
+        description: "Forbidden",
+        content: { "application/json": { schema: errorSchema } },
+      },
+      404: {
+        description: "Fuel not found",
+        content: { "application/json": { schema: errorSchema } },
+      },
     },
   }),
   async (c) => {
@@ -177,7 +204,7 @@ router.delete(
     }
 
     return c.json({ message: "Fuel deleted" });
-  }
+  },
 );
 
 export default router;

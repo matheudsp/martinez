@@ -1,20 +1,20 @@
-import { createRouter } from '@/lib/create-app'
-import { describeRoute, zSchema } from '@/lib/openapi'
-import { z } from 'zod'
+import { createRouter } from "@/lib/create-app";
+import { describeRoute, zSchema } from "@/lib/openapi";
+import { z } from "zod";
 
-const router = createRouter()
+const router = createRouter();
 
 router.get(
-  '/',
+  "/",
   describeRoute({
-    tags: ['Health'],
-    summary: 'Health check',
-    description: 'Returns API status',
+    tags: ["Health"],
+    summary: "Health check",
+    description: "Returns API status",
     responses: {
       200: {
-        description: 'API is running',
+        description: "API is running",
         content: {
-          'application/json': {
+          "application/json": {
             schema: zSchema(z.object({ message: z.string() })),
           },
         },
@@ -22,8 +22,8 @@ router.get(
     },
   }),
   (c) => {
-    return c.json({ message: 'App API' }, 200)
-  }
-)
+    return c.json({ message: "App API" }, 200);
+  },
+);
 
-export default router
+export default router;
