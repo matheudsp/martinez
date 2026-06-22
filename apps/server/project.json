@@ -1,0 +1,12 @@
+{
+    "name": "server",
+    "targets": {
+        "dev": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "apps/server",
+                "command": "bun run dev"
+            }
+        }
+    }
+}

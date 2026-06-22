@@ -3,8 +3,8 @@ import { createTRPCClient, httpBatchLink } from "@trpc/client";
 import * as Network from "expo-network";
 import { HeroUINativeConfig, HeroUINativeProvider } from "heroui-native";
 import { useEffect, useState } from "react";
-import { AppState, Platform } from "react-native";
 import type { AppStateStatus } from "react-native";
+import { AppState, Platform } from "react-native";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 

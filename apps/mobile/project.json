@@ -1,0 +1,12 @@
+{
+    "name": "mobile",
+    "targets": {
+        "dev": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "apps/mobile",
+                "command": "bun run start"
+            }
+        }
+    }
+}

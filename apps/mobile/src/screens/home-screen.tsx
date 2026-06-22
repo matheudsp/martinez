@@ -1,4 +1,3 @@
-import { useQuery } from "@tanstack/react-query";
 import { Card, Chip, Spinner } from "heroui-native";
 import { View } from "react-native";
 import { tv } from "tailwind-variants";
@@ -6,8 +5,6 @@ import { tv } from "tailwind-variants";
 import { BrandHeroIcon } from "@/components/brand-hero-icon/brand-hero-icon";
 import { StandardScrollView } from "@/components/ui/screen-containers/standard-scroll-view";
 import { Typography } from "@/components/ui/typography";
-import { useRefreshOnFocus } from "@/hooks/use-refresh-on-focus";
-import { useTRPC } from "@/lib/trpc";
 
 const statusDotVariants = tv({
   base: "size-2 rounded-full",
@@ -22,10 +19,6 @@ const statusDotVariants = tv({
 const TECH_STACK = ["Expo SDK 55", "React 19", "Tailwind v4", "tRPC v11", "HeroUI Native", "TypeScript"] as const;
 
 export function HomeScreen() {
-  const trpc = useTRPC();
-  useRefreshOnFocus(trpc.hello.pathKey());
-  const { data: greeting, isError, isPending } = useQuery(trpc.hello.greet.queryOptions());
-
   return (
     <StandardScrollView className="flex-1" contentContainerClassName="items-center gap-10 pb-8 pt-12">
       {/* Branding */}
@@ -54,22 +47,10 @@ export function HomeScreen() {
       <Card className="w-full">
         <Card.Body className="gap-1 p-4">
           <View className="flex-row items-center gap-2">
-            {isPending ? (
-              <Spinner size="sm" />
-            ) : (
-              <View className={statusDotVariants({ status: isError ? "error" : "connected" })} />
-            )}
-            <Typography variant="smallBold">
-              {isPending ? "Connecting..." : isError ? "Server Disconnected" : "Server Connected"}
-            </Typography>
+            <Spinner size="sm" />
+
+            <Typography variant="smallBold"></Typography>
           </View>
-          {!isPending && (
-            <Typography variant="caption" tone="muted">
-              {isError
-                ? "Start the server with pnpm run server:dev"
-                : `${greeting?.message} · Runtime: ${greeting?.runtime}`}
-            </Typography>
-          )}
         </Card.Body>
       </Card>
 

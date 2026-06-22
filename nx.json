@@ -1,15 +1,18 @@
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
+  "parallel": 2,
   "targetDefaults": {
-    "start": {
-      "dependsOn": [
-        "^start"
-      ]
-    },
     "dev": {
-      "dependsOn": [
-        "^dev"
-      ]
+      "cache": false
+    },
+    "lint": {
+      "cache": true
+    },
+    "typecheck": {
+      "cache": true
+    },
+    "build": {
+      "cache": true
     }
   },
   "analytics": false
