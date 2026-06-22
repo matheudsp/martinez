@@ -1,0 +1,12 @@
+{
+    "name": "@martinez/shared",
+    "private": true,
+    "type": "module",
+    "version": "1.0.0",
+    "exports": {
+        ".": "./src/index.ts"
+    },
+    "dependencies": {
+        "zod": "^4.4.3"
+    }
+}

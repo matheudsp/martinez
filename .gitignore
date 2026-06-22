@@ -45,3 +45,9 @@ coverage/
 
 # Bun
 bun.lock
+
+
+
+.nx/cache
+.nx/workspace-data
+.nx/migrate-runs
